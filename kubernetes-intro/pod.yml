@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: homework
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes  1;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      server {
+          listen       8000;
+          server_name  0.0.0.0;
+          location / {
+              root   /homework;
+              index  index.html index.htm;
+          }
+      }
+    }
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wserver
+  namespace: homework
+
+spec:
+
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: /homework
+      name: common-volume
+    - mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
+      readOnly: true
+      name: nginx-conf
+
+  initContainers:
+  - name: init-wserver
+    image: busybox:1.28
+    command: ['/bin/sh', '-c']
+    args:
+      - touch /init/index.html;
+        echo '<!DOCTYPE html>' >> /init/index.html;
+        echo '<html>' >> /init/index.html;
+        echo '<head><title>OTUS 1st Homework</title></head>' >> /init/index.html;
+        echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my first homework</p></div></body>' >> /init/index.html;
+        echo '</html>' >> /init/index.html;
+    volumeMounts:
+    - mountPath: /init
+      name: common-volume
+
+  volumes:
+  - name: common-volume
+    emptyDir:
+      sizeLimit: 1Mi
+
+  - name: nginx-conf
+    configMap:
+      name: nginx-conf
+      items:
+        - key: nginx.conf
+          path: nginx.conf
