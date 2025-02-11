@@ -42,6 +42,10 @@ spec:
       subPath: nginx.conf
       readOnly: true
       name: nginx-conf
+    lifecycle:
+      preStop:
+        exec:
+          command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1; sleep 120"]
 
   initContainers:
   - name: init-wserver
