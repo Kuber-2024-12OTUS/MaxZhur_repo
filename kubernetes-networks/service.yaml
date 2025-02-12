@@ -1,1 +1,14 @@
-test
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nginx
+  ports:
+    - name: nginx-svc-port
+      appProtocol: http
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
