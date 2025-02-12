@@ -27,12 +27,12 @@ metadata:
   name: depl-wserver
   namespace: homework
   labels:
-    app: nginx
+    app: hmwork-nginx
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx
+      app: hmwork-nginx
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -42,12 +42,12 @@ spec:
   template:
     metadata:
       labels:
-        app: nginx
+        app: hmwork-nginx
     spec:
       nodeSelector:
         homework: 'true'
       containers:
-      - name: nginx
+      - name: nginx-hm-container
         image: nginx:1.14.2
         ports:
         - containerPort: 8000
@@ -85,8 +85,8 @@ spec:
           - touch /init/index.html;
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
-            echo '<head><title>OTUS 1st Homework</title></head>' >> /init/index.html;
-            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my first homework</p></div></body>' >> /init/index.html;
+            echo '<head><title>OTUS 3rd Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my third homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
         volumeMounts:
         - mountPath: /init

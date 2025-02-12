@@ -5,10 +5,9 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: nginx
+    app: hmwork-nginx
   ports:
     - name: nginx-svc-port
-      appProtocol: http
       protocol: TCP
       port: 8000
       targetPort: 8000
