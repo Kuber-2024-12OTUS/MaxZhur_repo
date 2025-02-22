@@ -64,7 +64,7 @@ spec:
 #            - /homework/index.html
           initialDelaySeconds: 5
           periodSeconds: 15
-          successThreshold: 3
+          successThreshold: 2
         volumeMounts:
         - mountPath: /homework
           name: homework-pv
@@ -72,10 +72,13 @@ spec:
           subPath: nginx.conf
           readOnly: true
           name: nginx-conf
+        - mountPath: /homework/conf
+          name: homework-cm-vol
+          readOnly: true
         lifecycle:
           preStop:
             exec:
-              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1; sleep 120"]
+              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1"]
      
       initContainers:
       - name: init-wserver
@@ -86,7 +89,7 @@ spec:
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
             echo '<head><title>OTUS 3rd Homework</title></head>' >> /init/index.html;
-            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my third homework</p></div></body>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fourth homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
         volumeMounts:
         - mountPath: /init
@@ -108,3 +111,6 @@ spec:
         persistentVolumeClaim:
           claimName: homework-pvc
 
+      - name: homework-cm-vol
+        configMap:
+          name: homework-cm
