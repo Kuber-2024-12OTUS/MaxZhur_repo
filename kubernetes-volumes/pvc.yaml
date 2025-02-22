@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homework-pvc
+  namespace: homework
+spec:
+  storageClassName: ""
+  volumeName: homework-pv
+  resources:
+    requests:
+      storage: 10Mi
