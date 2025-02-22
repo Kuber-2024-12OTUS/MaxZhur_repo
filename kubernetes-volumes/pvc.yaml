@@ -4,8 +4,8 @@ metadata:
   name: homework-pvc
   namespace: homework
 spec:
-  storageClassName: ""
-  volumeName: homework-pv
+  accessModes:
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 10Mi
+      storage: 50Mi

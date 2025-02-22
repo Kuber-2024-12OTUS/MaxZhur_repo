@@ -37,7 +37,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
-      maxSurge: 2
+      maxSurge: 1
   revisionHistoryLimit: 2
   template:
     metadata:
@@ -67,7 +67,7 @@ spec:
           successThreshold: 3
         volumeMounts:
         - mountPath: /homework
-          name: common-volume
+          name: homework-pv
         - mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
@@ -90,12 +90,12 @@ spec:
             echo '</html>' >> /init/index.html;
         volumeMounts:
         - mountPath: /init
-          name: common-volume
+          name: homework-pv
      
       volumes:
-      - name: common-volume
-        emptyDir:
-          sizeLimit: 1Mi
+#      - name: common-volume
+#        emptyDir:
+#          sizeLimit: 1Mi
      
       - name: nginx-conf
         configMap:
@@ -103,3 +103,8 @@ spec:
           items:
             - key: nginx.conf
               path: nginx.conf 
+
+      - name: homework-pv
+        persistentVolumeClaim:
+          claimName: homework-pvc
+
