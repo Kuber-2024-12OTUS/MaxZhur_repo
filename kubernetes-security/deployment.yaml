@@ -44,11 +44,12 @@ spec:
       labels:
         app: hmwork-nginx
     spec:
+      serviceAccountName: monitoring
       nodeSelector:
         homework: 'true'
       containers:
       - name: nginx-hm-container
-        image: nginx:1.14.2
+        image: nginx
         ports:
         - containerPort: 8000
         readinessProbe:
@@ -58,10 +59,6 @@ spec:
             httpHeaders:
             - name: Custom-Header
               value: Awesome
-#          exec:
-#            command:
-#            - cat
-#            - /homework/index.html
           initialDelaySeconds: 5
           periodSeconds: 15
           successThreshold: 2
@@ -96,16 +93,12 @@ spec:
           name: homework-pv
      
       volumes:
-#      - name: common-volume
-#        emptyDir:
-#          sizeLimit: 1Mi
-     
       - name: nginx-conf
         configMap:
           name: nginx-conf
           items:
             - key: nginx.conf
-              path: nginx.conf 
+              path: nginx.conf
 
       - name: homework-pv
         persistentVolumeClaim:

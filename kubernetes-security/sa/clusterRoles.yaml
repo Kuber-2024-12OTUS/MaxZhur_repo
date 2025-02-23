@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: r-metrics
+rules:
+- apiGroups: [""]
+  resources: ["nodes/metrics"]
+  verbs: ["get", "watch", "list"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get", "watch", "list"]
