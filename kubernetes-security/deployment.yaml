@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: homework
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes  1;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      server {
+          listen       8000;
+          server_name  0.0.0.0;
+          location / {
+              root   /homework;
+              index  index.html index.htm;
+          }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: depl-wserver
+  namespace: homework
+  labels:
+    app: hmwork-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hmwork-nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: hmwork-nginx
+    spec:
+      nodeSelector:
+        homework: 'true'
+      containers:
+      - name: nginx-hm-container
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 8000
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+#          exec:
+#            command:
+#            - cat
+#            - /homework/index.html
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          successThreshold: 2
+        volumeMounts:
+        - mountPath: /homework
+          name: homework-pv
+        - mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+          name: nginx-conf
+        - mountPath: /homework/conf
+          name: homework-cm-vol
+          readOnly: true
+        lifecycle:
+          preStop:
+            exec:
+              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1"]
+     
+      initContainers:
+      - name: init-wserver
+        image: busybox:1.28
+        command: ['/bin/sh', '-c']
+        args:
+          - touch /init/index.html;
+            echo '<!DOCTYPE html>' >> /init/index.html;
+            echo '<html>' >> /init/index.html;
+            echo '<head><title>OTUS 3rd Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fourth homework</p></div></body>' >> /init/index.html;
+            echo '</html>' >> /init/index.html;
+        volumeMounts:
+        - mountPath: /init
+          name: homework-pv
+     
+      volumes:
+#      - name: common-volume
+#        emptyDir:
+#          sizeLimit: 1Mi
+     
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx.conf
+              path: nginx.conf 
+
+      - name: homework-pv
+        persistentVolumeClaim:
+          claimName: homework-pvc
+
+      - name: homework-cm-vol
+        configMap:
+          name: homework-cm
