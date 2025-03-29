@@ -44,8 +44,8 @@ spec:
       labels:
         app: hmwork-nginx
     spec:
-      nodeSelector:
-        homework: 'true'
+#      nodeSelector:
+#        homework: 'true'
       containers:
       - name: nginx-hm-container
         image: nginx:1.14.2
@@ -58,10 +58,6 @@ spec:
             httpHeaders:
             - name: Custom-Header
               value: Awesome
-#          exec:
-#            command:
-#            - cat
-#            - /homework/index.html
           initialDelaySeconds: 5
           periodSeconds: 15
           successThreshold: 3
