@@ -40,15 +40,9 @@ kubectl port-forward deployment/depl-wserver -n homework --address 0.0.0.0 8000:
 11.  Проверка Rolling Update. В манифесте kubernetes-controllers/deployment.yaml поменять что-нить в генерации index.html
 12. Обновить deployment, используя команду из пункта 4.
 13. Проверить поды в namespace.
+
+
 ![](screenshots/otus_2nd_hw_03.jpg)
+
 В стратегии RollingUpdate стоит недоступность максимум одного контейнера, но можно при апдейте поднимать два дополнительных.
 
-
-
-
-    
-
-
-    Создаем pod
-
-kubectl apply -f kubernetes-intro/pod.yam
