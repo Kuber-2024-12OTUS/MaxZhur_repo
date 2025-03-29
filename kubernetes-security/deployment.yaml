@@ -45,8 +45,8 @@ spec:
         app: hmwork-nginx
     spec:
       serviceAccountName: monitoring
-      nodeSelector:
-        homework: 'true'
+#      nodeSelector:
+#        homework: 'true'
       containers:
       - name: nginx-hm-container
         image: nginx
@@ -59,8 +59,8 @@ spec:
             httpHeaders:
             - name: Custom-Header
               value: Awesome
-          initialDelaySeconds: 5
-          periodSeconds: 15
+          initialDelaySeconds: 3
+          periodSeconds: 10
           successThreshold: 2
         volumeMounts:
         - mountPath: /homework
@@ -85,8 +85,8 @@ spec:
           - touch /init/index.html;
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
-            echo '<head><title>OTUS 3rd Homework</title></head>' >> /init/index.html;
-            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fourth homework</p></div></body>' >> /init/index.html;
+            echo '<head><title>OTUS 5th Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fiveth homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
         volumeMounts:
         - mountPath: /init
