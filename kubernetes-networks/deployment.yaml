@@ -58,9 +58,9 @@ spec:
             httpHeaders:
             - name: Custom-Header
               value: Awesome
-          initialDelaySeconds: 5
-          periodSeconds: 15
-          successThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 2
         volumeMounts:
         - mountPath: /homework
           name: common-volume
@@ -71,7 +71,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1; sleep 120"]
+              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1"]
      
       initContainers:
       - name: init-wserver
