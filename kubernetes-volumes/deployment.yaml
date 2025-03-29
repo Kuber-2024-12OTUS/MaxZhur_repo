@@ -44,8 +44,8 @@ spec:
       labels:
         app: hmwork-nginx
     spec:
-      nodeSelector:
-        homework: 'true'
+#      nodeSelector:
+#        homework: 'true'
       containers:
       - name: nginx-hm-container
         image: nginx:1.14.2
@@ -63,7 +63,7 @@ spec:
 #            - cat
 #            - /homework/index.html
           initialDelaySeconds: 5
-          periodSeconds: 15
+          periodSeconds: 10
           successThreshold: 2
         volumeMounts:
         - mountPath: /homework
