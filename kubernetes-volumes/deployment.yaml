@@ -88,7 +88,7 @@ spec:
           - touch /init/index.html;
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
-            echo '<head><title>OTUS 3rd Homework</title></head>' >> /init/index.html;
+            echo '<head><title>OTUS 4th Homework</title></head>' >> /init/index.html;
             echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fourth homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
         volumeMounts:
