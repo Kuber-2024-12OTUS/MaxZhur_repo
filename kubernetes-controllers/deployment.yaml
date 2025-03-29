@@ -67,7 +67,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1; sleep 120"]
+              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1"]
      
       initContainers:
       - name: init-wserver
@@ -77,8 +77,8 @@ spec:
           - touch /init/index.html;
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
-            echo '<head><title>OTUS 1st Homework</title></head>' >> /init/index.html;
-            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my first homework</p></div></body>' >> /init/index.html;
+            echo '<head><title>OTUS 2nd Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my second homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
         volumeMounts:
         - mountPath: /init
