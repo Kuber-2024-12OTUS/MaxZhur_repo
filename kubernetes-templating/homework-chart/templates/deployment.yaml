@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: depl-wserver
+  namespace: homework
+  labels:
+    app: hmwork-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hmwork-nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: hmwork-nginx
+    spec:
+      serviceAccountName: monitoring
+      containers:
+      - name: nginx-hm-container
+        image: nginx
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 8000
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          successThreshold: 2
+        volumeMounts:
+        - mountPath: /homework
+          name: homework-pv
+        - mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+          name: nginx-conf
+        - mountPath: /homework/conf
+          name: homework-cm-vol
+          readOnly: true
+        - mountPath: /script
+          name: get-metrics-vol
+          readOnly: true
+
+        lifecycle:
+          preStop:
+            exec:
+              command: ['/bin/sh', '-c', "rm -rf /homework/index.html; echo 'index.html has been deleted' > /proc/1/fd/1"]
+     
+      initContainers:
+      - name: init-wserver
+        image: nginx
+        command: ['/bin/sh', '-c']
+        args:
+          - touch /init/index.html;
+            echo '<!DOCTYPE html>' >> /init/index.html;
+            echo '<html>' >> /init/index.html;
+            echo '<head><title>OTUS 5th Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fiveth homework</p></div></body>' >> /init/index.html;
+            echo '</html>' >> /init/index.html;
+            ./script/get-metrics.sh
+        volumeMounts:
+        - mountPath: /init
+          name: homework-pv
+        - mountPath: /script
+          name: get-metrics-vol
+          readOnly: true
+
+     
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+
+      - name: homework-pv
+        persistentVolumeClaim:
+          claimName: homework-pvc
+
+      - name: homework-cm-vol
+        configMap:
+          name: homework-cm
+
+      - name: get-metrics-vol
+        configMap:
+          defaultMode: 0500
+          name: get-metrics-cm
