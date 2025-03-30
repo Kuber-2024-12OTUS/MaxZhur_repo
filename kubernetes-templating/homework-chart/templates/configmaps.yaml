@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: homework-cm
-  namespace: homework
+  name: {{ .Release.Name }}-cm-random
+  namespace: {{ .Release.Namespace }}
 data:
   file: |
     randomValue1= apple
@@ -13,8 +13,8 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-conf
-  namespace: homework
+  name: {{ .Release.Name }}-cm-nginxconf
+  namespace: {{ .Release.Namespace }}
 data:
   nginx.conf: |
     user nginx;
@@ -24,7 +24,7 @@ data:
     }
     http {
       server {
-          listen       8000;
+          listen       {{ .Values.service.port }};
           server_name  0.0.0.0;
           location / {
               root   /homework;
@@ -36,8 +36,8 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: get-metrics-cm
-  namespace: homework
+  name: {{ .Release.Name }}-cm-metrics
+  namespace: {{ .Release.Namespace }}
 data:
   get-metrics.sh: |
     #!/bin/bash
