@@ -1,54 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: depl-wserver
-  namespace: homework
+  name: {{ .Release.Name }}-depl
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: hmwork-nginx
+    app: {{ .Release.Name }}-nginx
 spec:
-  replicas: 3
+  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      app: hmwork-nginx
+      app: {{ .Release.Name }}-nginx
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
-  revisionHistoryLimit: 2
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+      maxSurge: {{ .Values.deployment.maxSurge }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
   template:
     metadata:
       labels:
-        app: hmwork-nginx
+        app: {{ .Release.Name }}-nginx
     spec:
-      serviceAccountName: monitoring
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
-      - name: nginx-hm-container
-        image: nginx
+      - name: {{ .Release.Name }}-nginx-container
+        image: {{ .Values.image.name }}
         ports:
-        - containerPort: 8000
+        - containerPort: {{ .Values.service.port }}
         readinessProbe:
           httpGet:
             path: /index.html
-            port: 8000
+            port: {{ .Values.service.port }}
             httpHeaders:
             - name: Custom-Header
               value: Awesome
-          initialDelaySeconds: 5
-          periodSeconds: 15
+          initialDelaySeconds: 3
+          periodSeconds: 10
           successThreshold: 2
         volumeMounts:
         - mountPath: /homework
-          name: homework-pv
+          name: {{ .Release.Name }}-pv
         - mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
-          name: nginx-conf
+          name: {{ .Release.Name }}-vol-nginxconf
         - mountPath: /homework/conf
-          name: homework-cm-vol
+          name: {{ .Release.Name }}-vol-random
           readOnly: true
         - mountPath: /script
-          name: get-metrics-vol
+          name: {{ .Release.Name }}-vol-metrics
           readOnly: true
 
         lifecycle:
@@ -64,35 +64,36 @@ spec:
           - touch /init/index.html;
             echo '<!DOCTYPE html>' >> /init/index.html;
             echo '<html>' >> /init/index.html;
-            echo '<head><title>OTUS 5th Homework</title></head>' >> /init/index.html;
-            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my fiveth homework</p></div></body>' >> /init/index.html;
+            echo '<head><title>OTUS 6th Homework</title></head>' >> /init/index.html;
+            echo '<body><div><p>Hello my name is Max Zhuravkov! I am trying to pass my sixth homework</p></div></body>' >> /init/index.html;
             echo '</html>' >> /init/index.html;
             ./script/get-metrics.sh
         volumeMounts:
         - mountPath: /init
-          name: homework-pv
+          name: {{ .Release.Name }}-pv
         - mountPath: /script
-          name: get-metrics-vol
+          name: {{ .Release.Name }}-vol-metrics
           readOnly: true
 
-     
+
+
       volumes:
-      - name: nginx-conf
+      - name: {{ .Release.Name }}-vol-nginxconf
         configMap:
-          name: nginx-conf
+          name: {{ .Release.Name }}-cm-nginxconf
           items:
             - key: nginx.conf
               path: nginx.conf
 
-      - name: homework-pv
+      - name: {{ .Release.Name }}-pv
         persistentVolumeClaim:
-          claimName: homework-pvc
+          claimName: {{ .Release.Name }}-pvc
 
-      - name: homework-cm-vol
+      - name: {{ .Release.Name }}-vol-random
         configMap:
-          name: homework-cm
+          name: {{ .Release.Name }}-cm-random
 
-      - name: get-metrics-vol
+      - name: {{ .Release.Name }}-vol-metrics
         configMap:
           defaultMode: 0500
-          name: get-metrics-cm
+          name: {{ .Release.Name }}-cm-metrics
