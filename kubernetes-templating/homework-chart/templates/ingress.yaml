@@ -1,26 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mini-ingress
-  namespace: homework
+  name: {{ .Release.Name }}-ingress
+  namespace: {{ .Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: homework.otus
+  - host: {{ .Values.ingress.hostname }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: nginx-svc
+            name: {{ .Release.Name }}-svc
             port:
-              number: 8000
+              number: {{ .Values.service.port }}
       - path: /homepage
         pathType: Prefix
         backend:
           service:
-            name: nginx-svc
+            name: {{ .Release.Name }}-svc
             port:
-              number: 8000
+              number: {{ .Values.service.port }}

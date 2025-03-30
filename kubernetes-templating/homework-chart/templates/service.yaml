@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-svc
+  name: {{ .Release.Name }}-svc
+  namespace: {{ .Release.Namespace }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   selector:
-    app: hmwork-nginx
+    app: {{ .Release.Name }}-nginx
   ports:
-    - name: nginx-svc-port
+    - name: {{ .Release.Name }}-svc-port
       protocol: TCP
-      port: 8000
-      targetPort: 8000
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
