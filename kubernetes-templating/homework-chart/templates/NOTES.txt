@@ -1,0 +1,11 @@
+Service installation has been completed
+
+To access service:
+1. Minikube Node IP: kubectl get node -o wide
+2. add to /etc/hosts: Minikube Node IP {{ .Values.ingress.hostname }}
+
+Checks:
+
+curl http://{{ .Values.ingress.hostname }}
+curl http://{{ .Values.ingress.hostname }}/conf/file
+curl http://{{ .Values.ingress.hostname }}/metrics.html | less

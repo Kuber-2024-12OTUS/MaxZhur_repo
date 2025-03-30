@@ -24,12 +24,5 @@ service:
 ingress:
   hostname: homework.otus
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+probeEnabled: true
 
