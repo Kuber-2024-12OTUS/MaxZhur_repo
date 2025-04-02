@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homework-cm
+  namespace: homework
+data:
+  file: |
+    randomValue1= apple
+    randomValue2="Aldebaran"
+    randomValue3="451"
+    randomValue4="2025"
