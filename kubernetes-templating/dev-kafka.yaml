@@ -1,0 +1,16 @@
+image:
+  tag: latest
+listeners:
+  client:
+    protocol:  PLAINTEXT
+listeners:
+  interbroker:
+    protocol:  PLAINTEXT
+persistence:
+  enabled: false
+broker:
+  replicaCount: 1
+controller:
+  replicaCount: 1
+sasl:
+  enabledMechanisms: PLAIN
